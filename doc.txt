@@ -1,0 +1,113 @@
+📌 Documentação de Rotas e Controllers
+
+🔹 Usuários
+
+controllerCadastrarUsuario (POST /usuarios)
+    º Body: nome, email, senha
+    º Valida campos obrigatórios e formato do email
+    º Verifica se email já está cadastrado
+    º Senha com pelo menos 6 caracteres
+    º Criptografa senha com bcrypt
+    º Cria usuário no banco
+    º Retorna: 201 Created + (id, nome, email, tipo)
+
+controllerLoginUsuario (POST /login)
+    º Body: email, senha
+    º Valida campos obrigatórios
+    º Verifica credenciais (bcrypt compare)
+    º Gera token JWT com id e tipo de usuário
+    º Retorna: 200 OK + token JWT
+
+controllerListarUsuarios (GET /usuarios)
+    º (Restrito a admin futuramente)
+    º Lista todos os usuários do banco
+    º Retorna: 200 OK + array de usuários
+
+🔹 Cursos
+
+controllerCriarCurso (POST /cursos) [instrutor]
+    º Body: título, descrição, preço (opcional)
+    º Valida campos obrigatórios
+    º Associa instrutor pelo token JWT
+    º Cria curso no banco
+    º Retorna: 201 Created + curso
+
+controllerListarCursos (GET /cursos)
+    º Pode receber query params (categoria, instrutor, preço)
+    º Retorna lista de cursos disponíveis
+    º Retorna: 200 OK + array de cursos
+
+controllerObterCurso (GET /cursos/:id)
+º Busca curso por ID
+º Inclui módulos, aulas e avaliações
+º Retorna: 200 OK + curso completo
+
+controllerAtualizarCurso (PUT /cursos/:id) [instrutor dono]
+º Body: título, descrição, preço
+º Valida se curso pertence ao instrutor autenticado
+º Atualiza dados no banco
+º Retorna: 200 OK + curso atualizado
+
+controllerDeletarCurso (DELETE /cursos/:id) [instrutor dono]
+º Valida permissão do instrutor
+º Remove curso e dependências (módulos, aulas)
+º Retorna: 204 No Content
+
+🔹 Módulos
+
+controllerCriarModulo (POST /cursos/:cursoId/modulos) [instrutor dono]
+º Body: título
+º Valida se curso existe e pertence ao instrutor
+º Cria módulo vinculado ao curso
+º Retorna: 201 Created + módulo
+
+controllerListarModulos (GET /cursos/:cursoId/modulos)
+º Busca módulos do curso
+º Inclui aulas de cada módulo
+º Retorna: 200 OK + array de módulos
+
+🔹 Aulas
+
+controllerCriarAula (POST /modulos/:moduloId/aulas) [instrutor dono]
+º Body: título, conteúdo (link/texto/pdf), tipo
+º Valida dados obrigatórios
+º Cria aula vinculada ao módulo
+º Retorna: 201 Created + aula
+
+controllerListarAulas (GET /modulos/:moduloId/aulas)
+º Lista aulas do módulo
+º Retorna: 200 OK + array de aulas
+
+🔹 Inscrições
+
+controllerInscreverCurso (POST /cursos/:id/inscrever) [aluno]
+º Valida se curso existe
+º Cria inscrição se ainda não existir
+º Retorna: 201 Created + inscrição
+
+controllerListarInscricoes (GET /meus-cursos) [aluno]
+º Busca cursos em que o aluno está inscrito
+º Retorna: 200 OK + array de cursos do aluno
+
+🔹 Progresso
+
+controllerMarcarAulaConcluida (POST /aulas/:id/concluir) [aluno]
+º Valida se aluno está inscrito no curso
+º Marca aula como concluída no progresso
+º Retorna: 200 OK + confirmação
+
+controllerObterProgressoCurso (GET /cursos/:id/progresso) [aluno]
+º Calcula % de progresso do aluno no curso
+º Retorna: 200 OK + { percentual: X }
+
+🔹 Avaliações
+
+controllerAvaliarCurso (POST /cursos/:id/avaliar) [aluno inscrito]
+º Body: nota (1–5), comentário
+º Valida se aluno está inscrito no curso
+º Cria avaliação no banco
+º Retorna: 201 Created + avaliação
+
+controllerListarAvaliacoes (GET /cursos/:id/avaliacoes)
+º Busca todas as avaliações de um curso
+º Retorna: 200 OK + array de avaliações
