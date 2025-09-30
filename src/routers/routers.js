@@ -1,8 +1,15 @@
 const express = require('express')
-const { testando } = require('../controllers/controllerUsuarios')
+const { controllerCadastrarUsuario, controllerListarUsuarios } = require('../controllers/controllerUsuarios')
+const { controllerLoginUsuario } = require('../controllers/controllerLogin.js')
+const { controllerCadastrarCurso } = require('../controllers/controllerCursos')
+const auth = require('../middlewares/auth')
 
-const rotas = express()
+const routers = express()
 
-rotas.get('/teste', testando)
+routers.post('/usuarios', controllerCadastrarUsuario )
+routers.post('/login', controllerLoginUsuario)
+routers.get('/usuarios', controllerListarUsuarios)
 
-module.exports = rotas
+routers.post('/cursos', auth, controllerCadastrarCurso)
+
+module.exports = routers

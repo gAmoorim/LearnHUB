@@ -3,4 +3,6 @@ function validarEmail(email) {
     return regex.test(email);
 }
 
-module.exports = { validarEmail }
+module.exports = {
+    validarEmail
+}

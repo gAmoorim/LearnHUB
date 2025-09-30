@@ -1,6 +1,5 @@
--- ===========================
--- Tabela de Usuários
--- ===========================
+create database learnhub;
+
 CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -10,9 +9,6 @@ CREATE TABLE usuarios (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ===========================
--- Tabela de Cursos
--- ===========================
 CREATE TABLE cursos (
     id SERIAL PRIMARY KEY,
     titulo VARCHAR(200) NOT NULL,
@@ -22,9 +18,6 @@ CREATE TABLE cursos (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ===========================
--- Tabela de Módulos
--- ===========================
 CREATE TABLE modulos (
     id SERIAL PRIMARY KEY,
     titulo VARCHAR(200) NOT NULL,
@@ -32,9 +25,6 @@ CREATE TABLE modulos (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ===========================
--- Tabela de Aulas
--- ===========================
 CREATE TABLE aulas (
     id SERIAL PRIMARY KEY,
     titulo VARCHAR(200) NOT NULL,
@@ -44,9 +34,6 @@ CREATE TABLE aulas (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ===========================
--- Tabela de Inscrições
--- ===========================
 CREATE TABLE inscricoes (
     id SERIAL PRIMARY KEY,
     aluno_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -55,9 +42,6 @@ CREATE TABLE inscricoes (
     UNIQUE (aluno_id, curso_id) -- evita duplicar inscrição
 );
 
--- ===========================
--- Tabela de Progresso
--- ===========================
 CREATE TABLE progresso (
     id SERIAL PRIMARY KEY,
     aluno_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
@@ -67,15 +51,11 @@ CREATE TABLE progresso (
     UNIQUE (aluno_id, aula_id) -- garante 1 registro por aluno/aula
 );
 
--- ===========================
--- Tabela de Avaliações
--- ===========================
 CREATE TABLE avaliacoes (
     id SERIAL PRIMARY KEY,
     curso_id INT NOT NULL REFERENCES cursos(id) ON DELETE CASCADE,
     aluno_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
-    nota INT NOT NULL CHECK (nota BETWEEN 1 AND 5),
+    nota INT NOT NULL CHECK (nota BETWEEN 1 AND 10),
     comentario TEXT,
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (curso_id, aluno_id) -- cada aluno avalia um curso uma vez
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

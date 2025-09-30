@@ -1,12 +1,12 @@
-📌 Documentação de Rotas e Controllers
+Documentação de Rotas e Controllers
 
 🔹 Usuários
 
 controllerCadastrarUsuario (POST /usuarios)
-    º Body: nome, email, senha
+    º Body: nome, email, senha, tipo (aluno ou instrutor)
     º Valida campos obrigatórios e formato do email
-    º Verifica se email já está cadastrado
     º Senha com pelo menos 6 caracteres
+    º Verifica se email já está cadastrado
     º Criptografa senha com bcrypt
     º Cria usuário no banco
     º Retorna: 201 Created + (id, nome, email, tipo)
@@ -23,12 +23,17 @@ controllerListarUsuarios (GET /usuarios)
     º Lista todos os usuários do banco
     º Retorna: 200 OK + array de usuários
 
+controllerObterUsuario
+
+controllerDeletarUsuario
+
 🔹 Cursos
 
 controllerCriarCurso (POST /cursos) [instrutor]
     º Body: título, descrição, preço (opcional)
     º Valida campos obrigatórios
-    º Associa instrutor pelo token JWT
+    º Associa instrutor pelo token JWT (receber o id do instrutor_id ao logar)
+    º Verificar se o usuario é instrutor
     º Cria curso no banco
     º Retorna: 201 Created + curso
 
@@ -38,15 +43,15 @@ controllerListarCursos (GET /cursos)
     º Retorna: 200 OK + array de cursos
 
 controllerObterCurso (GET /cursos/:id)
-º Busca curso por ID
-º Inclui módulos, aulas e avaliações
-º Retorna: 200 OK + curso completo
+    º Busca curso por ID
+    º Inclui módulos, aulas e avaliações
+    º Retorna: 200 OK + curso completo
 
 controllerAtualizarCurso (PUT /cursos/:id) [instrutor dono]
-º Body: título, descrição, preço
-º Valida se curso pertence ao instrutor autenticado
-º Atualiza dados no banco
-º Retorna: 200 OK + curso atualizado
+    º Body: título, descrição, preço
+    º Valida se curso pertence ao instrutor autenticado
+    º Atualiza dados no banco
+    º Retorna: 200 OK + curso atualizado
 
 controllerDeletarCurso (DELETE /cursos/:id) [instrutor dono]
 º Valida permissão do instrutor

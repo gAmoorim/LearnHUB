@@ -1,11 +1,11 @@
 const express = require('express')
 const cors = require('cors')
-const rotas = require('./routers/routers')
+const routers = require('./routers/routers')
 
 const app = express()
 
 app.use(express.json())
 app.use(cors())
-app.use(rotas)
+app.use(routers)
 
 module.exports = app
