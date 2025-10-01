@@ -54,9 +54,9 @@ controllerAtualizarCurso (PUT /cursos/:id) [instrutor dono]
     º Retorna: 200 OK + curso atualizado
 
 controllerDeletarCurso (DELETE /cursos/:id) [instrutor dono]
-º Valida permissão do instrutor
-º Remove curso e dependências (módulos, aulas)
-º Retorna: 204 No Content
+    º Valida permissão do instrutor
+    º Remove curso e dependências (módulos, aulas)
+    º Retorna: 204 No Content
 
 🔹 Módulos
 

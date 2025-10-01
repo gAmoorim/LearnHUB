@@ -13,6 +13,7 @@ CREATE TABLE cursos (
     id SERIAL PRIMARY KEY,
     titulo VARCHAR(200) NOT NULL,
     descricao TEXT NOT NULL,
+    categoria TEXT NOT NULL,
     preco NUMERIC(10,2) DEFAULT 0,
     instrutor_id INT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
