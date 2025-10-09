@@ -15,7 +15,9 @@ const queryCadastrarNovoUsuario = async (nome, email, tipo, senhaCriptografada) 
 const queryBuscarUsuarioPeloId = async (id) => {
     return await knex('usuarios')
     .where({id})
+    .select('id', 'nome', 'email', 'tipo', 'criado_em')
     .first()
+
 }
 
 const queryListarUsuarios = async () => {
@@ -23,9 +25,16 @@ const queryListarUsuarios = async () => {
     .select('id', 'nome', 'email', 'tipo', 'criado_em')
 }
 
+const queryDeletarUsuario = async (id) => {
+    return await knex('usuarios')
+    .where({id})
+    .del()
+}
+
 module.exports = {
     queryBuscarUsuarioPeloEmail,
     queryCadastrarNovoUsuario,
     queryBuscarUsuarioPeloId,
-    queryListarUsuarios
+    queryListarUsuarios,
+    queryDeletarUsuario
 }

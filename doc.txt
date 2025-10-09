@@ -18,19 +18,28 @@ controllerLoginUsuario (POST /login)
     º Gera token JWT com id e tipo de usuário
     º Retorna: 200 OK + token JWT
 
+--RESTRINGIR A ADMIN--
+
 controllerListarUsuarios (GET /usuarios)
     º (Restrito a admin futuramente)
     º Lista todos os usuários do banco
     º Retorna: 200 OK + array de usuários
 
-controllerObterUsuario
+controllerObterUsuario (GET /usuarios/:id)
+    º Busca usuario por ID
+    º busca dados do usuário
+    º retorna: 200 OK + dados do usuário
 
-controllerDeletarUsuario
+controllerDeletarUsuario (DELETE /usuarios/:id)
+    º confirmar existência do usuário
+    º deleta usuário e dados vinculados
+    º retorna: 204 No Content
 
+    
 🔹 Cursos
 
 controllerCriarCurso (POST /cursos) [instrutor]
-    º Body: título, descrição, preço (opcional)
+    º Body: título, descrição, preco (opcional)
     º Valida campos obrigatórios
     º Associa instrutor pelo token JWT (receber o id do instrutor_id ao logar)
     º Verificar se o usuario é instrutor
@@ -38,7 +47,7 @@ controllerCriarCurso (POST /cursos) [instrutor]
     º Retorna: 201 Created + curso
 
 controllerListarCursos (GET /cursos)
-    º Pode receber query params (categoria, instrutor, preço)
+    º Pode receber query params (categoria, instrutor, preco)
     º Retorna lista de cursos disponíveis
     º Retorna: 200 OK + array de cursos
 
@@ -48,7 +57,7 @@ controllerObterCurso (GET /cursos/:id)
     º Retorna: 200 OK + curso completo
 
 controllerAtualizarCurso (PUT /cursos/:id) [instrutor dono]
-    º Body: título, descrição, preço
+    º Body: título, descrição, preco
     º Valida se curso pertence ao instrutor autenticado
     º Atualiza dados no banco
     º Retorna: 200 OK + curso atualizado
@@ -60,28 +69,28 @@ controllerDeletarCurso (DELETE /cursos/:id) [instrutor dono]
 
 🔹 Módulos
 
-controllerCriarModulo (POST /cursos/:cursoId/modulos) [instrutor dono]
-º Body: título
-º Valida se curso existe e pertence ao instrutor
-º Cria módulo vinculado ao curso
-º Retorna: 201 Created + módulo
+controllerCriarModulo (POST /modulos/:cursoId) [instrutor dono]
+    º Body: título
+    º Valida se curso existe e pertence ao instrutor
+    º Cria módulo vinculado ao curso
+    º Retorna: 201 Created + módulo
 
 controllerListarModulos (GET /cursos/:cursoId/modulos)
-º Busca módulos do curso
-º Inclui aulas de cada módulo
-º Retorna: 200 OK + array de módulos
+    º Busca módulos do curso
+    º Inclui aulas de cada módulo
+    º Retorna: 200 OK + array de módulos
 
 🔹 Aulas
 
 controllerCriarAula (POST /modulos/:moduloId/aulas) [instrutor dono]
-º Body: título, conteúdo (link/texto/pdf), tipo
-º Valida dados obrigatórios
-º Cria aula vinculada ao módulo
-º Retorna: 201 Created + aula
+    º Body: título, conteúdo (link/texto/pdf), tipo
+    º Valida dados obrigatórios
+    º Cria aula vinculada ao módulo
+    º Retorna: 201 Created + aula
 
 controllerListarAulas (GET /modulos/:moduloId/aulas)
-º Lista aulas do módulo
-º Retorna: 200 OK + array de aulas
+    º Lista aulas do módulo
+    º Retorna: 200 OK + array de aulas
 
 🔹 Inscrições
 

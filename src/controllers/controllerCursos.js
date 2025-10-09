@@ -1,4 +1,4 @@
-const { queryVerificarInstrutor, queryCadastrarCurso, queryListarCursos, queryObterCursoPorId } = require("../database/querys/queryCursos")
+const { queryVerificarInstrutor, queryCadastrarCurso, queryListarCursos, queryObterCursoPorId, queryCursoPertencente, queryAtualizarCurso, queryDeletarCurso } = require("../database/querys/queryCursos")
 
 const controllerCadastrarCurso = async (req, res) => {
     const { titulo, descricao, preco, categoria } = req.body
@@ -47,14 +47,14 @@ const controllerListarCursos = async (req, res) => {
 }
 
 const controllerObterCurso = async (req, res) => {
-    const {id} = req.params
+    const {cursoId} = req.params
 
-    if (!id) {
-        return res.status(400).json({ error: 'insira o id do curso'})
+    if (!cursoId) {
+        return res.status(400).json({ error: 'Informe o id do curso'})
     }
 
     try {
-        const curso = await queryObterCursoPorId(id)
+        const curso = await queryObterCursoPorId(cursoId)
 
         if (!curso) {
             return res.status(404).json({ error: 'Curso não encontrado'})
@@ -69,8 +69,73 @@ const controllerObterCurso = async (req, res) => {
     }
 }
 
+const controllerAtualizarCurso = async (req, res) => {
+    const { titulo, descricao, preco } = req.body
+
+    if (!titulo && !descricao && !preco) {
+        return res.status(400).json({ error: 'Envie o campo para ser atualizado'})
+    }
+
+    const { cursoId } = req.params
+
+    if (!cursoId) {
+        return res.status(400).json9({ error: 'Informe o id do curso'})
+    }
+
+    try {
+        const instrutorId = req.usuario.id
+        const cursoPertencente = await queryCursoPertencente(instrutorId, cursoId)
+
+        if (!cursoPertencente) {
+            return res.status(400).json({ error: 'id do curso ou do instrutor incorreto'})
+        }
+
+        const cursoAtualizado = await queryAtualizarCurso(titulo, descricao, preco, cursoId)
+
+        return res.status(200).json({ mensagem: 'Curso atualizado com sucesso',
+            cursoAtualizado
+        })
+    } catch (error) {
+        console.log('Ocorreu um erro ao atualizar o curso', error)
+        return res.status(500).json({ error: `Erro ao atualizar os cursos: ${error.message}`})
+    }
+}
+
+const controllerDeletarCurso = async(req, res) => {
+    const { cursoId } = req.params
+
+    if (!cursoId) {
+        return res.status(400).json({ error: 'Informe o id do curso'})
+    }
+
+    try {
+        const instrutorId = req.usuario.id
+
+        const curso = await queryObterCursoPorId(cursoId)
+
+        if (!curso) {
+            return res.status(404).json({ mensagem: 'Curso não encontrado'})
+        }
+
+        const cursoPertencente = await queryCursoPertencente(instrutorId, cursoId)
+
+        if (!cursoPertencente) {
+            return res.status(400).json({ error: 'id do curso ou do instrutor incorreto'})
+        }
+
+        await queryDeletarCurso(cursoId)
+
+        return res.status(200).json({ mensagem: 'Curso deletado com sucesso'})
+    } catch (error) {
+        console.log('Ocorreu um erro ao deletar o curso', error)
+        return res.status(500).json({ error: `Erro ao deletar os cursos: ${error.message}`})
+    }
+}
+
 module.exports = {
     controllerCadastrarCurso,
     controllerListarCursos,
-    controllerObterCurso
+    controllerObterCurso,
+    controllerAtualizarCurso,
+    controllerDeletarCurso
 }

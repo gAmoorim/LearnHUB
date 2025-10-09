@@ -1,4 +1,4 @@
-const { queryBuscarUsuarioPeloEmail, queryCadastrarNovoUsuario, queryListarUsuarios } = require("../database/querys/queryUsuarios")
+const { queryBuscarUsuarioPeloEmail, queryCadastrarNovoUsuario, queryListarUsuarios, queryBuscarUsuarioPeloId, queryDeletarUsuario } = require("../database/querys/queryUsuarios")
 const { validarEmail } = require("../utils/validations")
 const bcrypt = require('bcrypt')
 
@@ -58,7 +58,55 @@ const controllerListarUsuarios = async (req, res) => {
     }
 }
 
+const controllerObterUsuario = async (req, res) => {
+    const {id} = req.params
+
+    if (!id) {
+        return res.status(400).json({ error: 'Erro ao obter o id do usuario'})
+    }
+
+    try {
+        const usuario = await queryBuscarUsuarioPeloId(id)
+
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuário não encontrado'})
+        }
+
+        return res.status(200).json({ mensagem: 'Usuário encontrado',
+            usuario
+        })
+    } catch (error) {
+        console.error("Ocorreu um erro ao obter o usuário:", error)
+        return res.status(500).json({ error: `Erro ao obter o usuário: ${error.message}`})
+    }
+}
+
+const controllerDeletarUsuario = async (req, res) => {
+    const { id } = req.params
+
+    if (!id) {
+        return res.status(400).json({ error: 'Erro ao obter o id do usuario'})
+    }
+
+    try {
+        const usuario = await queryBuscarUsuarioPeloId(id)
+
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuário não encontrado'})
+        }
+
+        await queryDeletarUsuario(id)
+
+        return res.status(204).json({ mensagem: 'Usuário deletado com sucesso'})
+    } catch (error) {
+        console.error("Ocorreu um erro ao deletar o usuário:", error)
+        return res.status(500).json({ error: `Erro ao deletar o usuário: ${error.message}`})
+    }
+}
+
 module.exports = {
     controllerCadastrarUsuario,
-    controllerListarUsuarios
+    controllerListarUsuarios,
+    controllerObterUsuario,
+    controllerDeletarUsuario
 }
