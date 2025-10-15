@@ -82,7 +82,7 @@ controllerListarModulos (GET /cursos/:cursoId/modulos)
 
 🔹 Aulas
 
-controllerCriarAula (POST /modulos/:moduloId/aulas) [instrutor dono]
+controllerCriarAula (POST aulas/modulos/:moduloId) [instrutor dono]
     º Body: título, conteúdo (link/texto/pdf), tipo
     º Valida dados obrigatórios
     º Cria aula vinculada ao módulo
