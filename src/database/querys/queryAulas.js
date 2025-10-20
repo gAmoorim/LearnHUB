@@ -6,6 +6,13 @@ const queryCadastrarAula = async (titulo, conteudo, tipo, moduloId) => {
     .returning('*')
 }
 
+const queryListarAulasPorModulo = async (moduloId) => {
+    return await knex('aulas')
+    .where({modulo_id: moduloId})
+    .select('*')
+}
+
 module.exports = {
-    queryCadastrarAula
+    queryCadastrarAula,
+    queryListarAulasPorModulo
 }

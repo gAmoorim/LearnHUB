@@ -3,7 +3,7 @@ const { controllerCadastrarUsuario, controllerListarUsuarios, controllerObterUsu
 const { controllerLoginUsuario } = require('../controllers/controllerLogin.js')
 const { controllerCadastrarCurso, controllerListarCursos, controllerObterCurso, controllerAtualizarCurso, controllerDeletarCurso } = require('../controllers/controllerCursos')
 const { controllerCadastrarModulo, controllerListarModulos } = require('../controllers/controllerModulos.js')
-const { controllerCadastrarAula } = require('../controllers/controllerAulas.js')
+const { controllerCadastrarAula, controllerListarAulas } = require('../controllers/controllerAulas.js')
 const auth = require('../middlewares/auth')
 
 const routers = express()
@@ -26,5 +26,6 @@ routers.post('/modulos/:cursoId', auth, controllerCadastrarModulo)
 routers.get('/cursos/:cursoId/modulos', controllerListarModulos)
 
 routers.post('/aulas/modulos/:moduloId', auth, controllerCadastrarAula)
+routers.get('/aulas/modulos/:moduloId', controllerListarAulas)
 
 module.exports = routers

@@ -88,7 +88,7 @@ controllerCriarAula (POST aulas/modulos/:moduloId) [instrutor dono]
     º Cria aula vinculada ao módulo
     º Retorna: 201 Created + aula
 
-controllerListarAulas (GET /modulos/:moduloId/aulas)
+controllerListarAulas (/aulas/modulos/:moduloId)
     º Lista aulas do módulo
     º Retorna: 200 OK + array de aulas
 
