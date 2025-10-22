@@ -95,24 +95,24 @@ controllerListarAulas (/aulas/modulos/:moduloId)
 🔹 Inscrições
 
 controllerInscreverCurso (POST /cursos/:id/inscrever) [aluno]
-º Valida se curso existe
-º Cria inscrição se ainda não existir
-º Retorna: 201 Created + inscrição
+    º Valida se curso existe
+    º Cria inscrição se ainda não existir
+    º Retorna: 201 Created + inscrição
 
 controllerListarInscricoes (GET /meus-cursos) [aluno]
-º Busca cursos em que o aluno está inscrito
-º Retorna: 200 OK + array de cursos do aluno
+    º Busca cursos em que o aluno está inscrito
+    º Retorna: 200 OK + array de cursos do aluno
 
 🔹 Progresso
 
-controllerMarcarAulaConcluida (POST /aulas/:id/concluir) [aluno]
-º Valida se aluno está inscrito no curso
-º Marca aula como concluída no progresso
-º Retorna: 200 OK + confirmação
+    controllerMarcarAulaConcluida (POST /aulas/:id/concluir) [aluno]
+    º Valida se aluno está inscrito no curso
+    º Marca aula como concluída no progresso
+    º Retorna: 200 OK + confirmação
 
 controllerObterProgressoCurso (GET /cursos/:id/progresso) [aluno]
-º Calcula % de progresso do aluno no curso
-º Retorna: 200 OK + { percentual: X }
+    º Calcula % de progresso do aluno no curso
+    º Retorna: 200 OK + { percentual: X }
 
 🔹 Avaliações
 

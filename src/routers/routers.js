@@ -4,6 +4,7 @@ const { controllerLoginUsuario } = require('../controllers/controllerLogin.js')
 const { controllerCadastrarCurso, controllerListarCursos, controllerObterCurso, controllerAtualizarCurso, controllerDeletarCurso } = require('../controllers/controllerCursos')
 const { controllerCadastrarModulo, controllerListarModulos } = require('../controllers/controllerModulos.js')
 const { controllerCadastrarAula, controllerListarAulas } = require('../controllers/controllerAulas.js')
+const { controllerInscreverseNoCurso, controllerListarInscricoes } = require('../controllers/controllerInscricoes.js')
 const auth = require('../middlewares/auth')
 
 const routers = express()
@@ -27,5 +28,8 @@ routers.get('/cursos/:cursoId/modulos', controllerListarModulos)
 
 routers.post('/aulas/modulos/:moduloId', auth, controllerCadastrarAula)
 routers.get('/aulas/modulos/:moduloId', controllerListarAulas)
+
+routers.post('/cursos/:cursoId/inscrever', auth, controllerInscreverseNoCurso)
+routers.get('/meus-cursos', auth, controllerListarInscricoes)
 
 module.exports = routers
