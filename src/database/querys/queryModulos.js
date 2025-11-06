@@ -24,9 +24,17 @@ const queryBuscarAulasPorModulos = async (modulosIds) => {
     .select('id', 'titulo', 'conteudo', 'modulo_id')
 }
 
+const queryBuscarCursoPorModulo = async (moduloId) => {
+  return await knex('modulos')
+  .select('curso_id')
+  .where({id: moduloId})
+  .first()
+}
+
 module.exports = {
     queryCadastrarModulo,
     queryModuloExistente,
     queryListarModulosPorCurso,
-    queryBuscarAulasPorModulos
+    queryBuscarAulasPorModulos,
+    queryBuscarCursoPorModulo
 }

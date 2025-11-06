@@ -1,8 +1,10 @@
 const { queryCadastrarAula, queryListarAulasPorModulo } = require("../database/querys/queryAulas")
+const { queryBuscarCursoPorModulo } = require("../database/querys/queryModulos")
 
 const controllerCadastrarAula = async (req, res) => {
-  //Body: título, conteúdo (link/texto/pdf), tipo(video, texto, pdf)
+  //conteúdo (link/texto/pdf), tipo(video, texto, pdf)
   const {titulo, conteudo, tipo} = req.body
+  const { moduloId } = req.params
 
   if (!titulo || !conteudo || !tipo) {
     return res.status(400).json({ mensagem: 'Preencha os campos necessários'})
@@ -13,15 +15,22 @@ const controllerCadastrarAula = async (req, res) => {
       return res.status(400).json({ error: 'o tipo deve ser apenas: video, texto ou pdf'})
     }
   }
+
+  if (!moduloId) {
+    return res.status(400).json({ mensagem: 'informe o id do módulo'})
+  }
+
   // VER COMO ACEITAR PDF E VIDEO NO CONTEUDO
   try {
-    const { moduloId } = req.params
+    const curso = await queryBuscarCursoPorModulo(moduloId)
 
-    if (!moduloId) {
-      return res.status(400).json({ mensagem: 'informe o id do módulo'})
+    if (!curso) {
+      return res.status(400).json({ error: 'Módulo não encontrado ou sem curso associado'})
     }
 
-    const novaAula = await queryCadastrarAula(titulo, conteudo, tipo, moduloId)
+    const cursoId = curso.curso_id
+
+    const novaAula = await queryCadastrarAula(titulo, conteudo, tipo, moduloId, cursoId)
 
     return res.status(201).json({ mensagem: 'Nova aula cadastrada',
       aula: novaAula

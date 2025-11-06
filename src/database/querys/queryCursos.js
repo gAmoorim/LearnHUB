@@ -77,6 +77,12 @@ const queryDeletarCurso = async (cursoId) => {
   .del()
 }
 
+const queryVerificarCursoExistente = async (cursoId) => {
+  return await knex('cursos')
+  .where({ id: cursoId })
+  .first()
+}
+
 module.exports = {
   queryVerificarInstrutor,
   queryCadastrarCurso,
@@ -84,5 +90,6 @@ module.exports = {
   queryObterCursoPorId,
   queryCursoPertencente,
   queryAtualizarCurso,
-  queryDeletarCurso
+  queryDeletarCurso,
+  queryVerificarCursoExistente
 }

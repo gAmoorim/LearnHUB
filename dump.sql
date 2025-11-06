@@ -32,6 +32,7 @@ CREATE TABLE aulas (
     conteudo TEXT NOT NULL,
     tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('video', 'texto', 'pdf')),
     modulo_id INT NOT NULL REFERENCES modulos(id) ON DELETE CASCADE,
+    curso_id INT NOT NULL REFERENCES cursos(id) ON DELETE CASCADE,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

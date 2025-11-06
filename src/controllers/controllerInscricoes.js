@@ -1,4 +1,4 @@
-const { queryObterCursoPorId } = require("../database/querys/queryCursos")
+const { queryVerificarCursoExistente } = require("../database/querys/queryCursos")
 const { queryInscreverNoCurso, queryInscricaoExistente, queryListarCursosInscritos } = require("../database/querys/queryInscricoes")
 
 const controllerInscreverseNoCurso = async (req, res) => {
@@ -15,7 +15,7 @@ const controllerInscreverseNoCurso = async (req, res) => {
     }
 
     try {
-        const curso = queryObterCursoPorId(cursoId)
+        const curso = await queryVerificarCursoExistente(cursoId)
 
         if (!curso) {
             return res.status(404).json({ error: 'Curso não existe ou não foi encontrado'})
