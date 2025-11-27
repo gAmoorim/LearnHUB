@@ -117,7 +117,7 @@ controllerObterProgressoCurso (GET /cursos/:id/progresso) [aluno]
 🔹 Avaliações
 
 controllerAvaliarCurso (POST /cursos/:id/avaliar) [aluno inscrito]
-    º Body: nota (1–5), comentário
+    º Body: nota (1–10), comentário
     º Valida se aluno está inscrito no curso
     º Cria avaliação no banco
     º Retorna: 201 Created + avaliação

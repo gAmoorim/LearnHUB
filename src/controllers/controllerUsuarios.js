@@ -42,8 +42,6 @@ const controllerCadastrarUsuario = async (req,res) => {
 }
 
 const controllerListarUsuarios = async (req, res) => {
-    //(Restrito a admin futuramente)
-    
     try {
         const usuarios = await queryListarUsuarios()
 
@@ -60,14 +58,20 @@ const controllerListarUsuarios = async (req, res) => {
 
 const controllerObterUsuario = async (req, res) => {
     const {id} = req.params
-
+    
     if (!id) {
         return res.status(400).json({ error: 'Erro ao obter o id do usuario'})
     }
 
     try {
-        const usuario = await queryBuscarUsuarioPeloId(id)
+        const usuarioLogado = req.usuario
 
+        if (String(usuarioLogado.id) !== String(id) && usuarioLogado.tipo !== 'adm') {
+            return res.status(403).json({ error: 'somente o proprio usuario ou um adm pode obter seus dados'})
+        }
+
+        const usuario = await queryBuscarUsuarioPeloId(id)
+        
         if (!usuario) {
             return res.status(404).json({ error: 'Usuário não encontrado'})
         }
@@ -89,6 +93,18 @@ const controllerDeletarUsuario = async (req, res) => {
     }
 
     try {
+        const usuarioLogado = req.usuario
+
+        if (String(usuarioLogado.id) !== String(id) && usuarioLogado.tipo !== 'adm') {
+            return res.status(403).json({ error: 'somente o proprio usuario ou um adm pode obter seus dados'})
+        }
+        
+        const usuarioId = req.usuario.id
+
+        if (usuarioId !== id) {
+            return res.status(400).json({ error: 'somente o proprio usuario ou um adm pode deletar a conta'})
+        }
+
         const usuario = await queryBuscarUsuarioPeloId(id)
 
         if (!usuario) {

@@ -8,7 +8,7 @@ const queryInscreverNoCurso = async (alunoId, cursoId) => {
 
 const queryInscricaoExistente = async (alunoId, cursoId) => {
   return await knex('inscricoes')
-  .where({aluno_id: alunoId, curso_id :cursoId})
+  .where({aluno_id: alunoId, curso_id: cursoId})
   .first()
 }
 

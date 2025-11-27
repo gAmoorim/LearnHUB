@@ -6,6 +6,7 @@ const { controllerCadastrarModulo, controllerListarModulos } = require('../contr
 const { controllerCadastrarAula, controllerListarAulas } = require('../controllers/controllerAulas.js')
 const { controllerInscreverseNoCurso, controllerListarInscricoes } = require('../controllers/controllerInscricoes.js')
 const { controllerMarcarAulaConcluida, controllerObterProgressoCurso } = require('../controllers/controllerProgreso.js')
+const { controllerAvaliarCurso, controllerListarAvaliacoesDoCurso } = require('../controllers/controllerAvaliacoes.js')
 const auth = require('../middlewares/auth')
 
 const routers = express()
@@ -13,9 +14,9 @@ const routers = express()
 routers.post('/login', controllerLoginUsuario)
 
 routers.post('/usuarios', controllerCadastrarUsuario )
-routers.get('/usuarios', controllerListarUsuarios)
-routers.get('/usuarios/:id', controllerObterUsuario)
-routers.delete('/usuarios/:id', controllerDeletarUsuario)
+routers.get('/usuarios', auth, controllerListarUsuarios)  // apenas adm lista usuarios (criar tipo adm em usuarios)
+routers.get('/usuarios/:id', auth, controllerObterUsuario)
+routers.delete('/usuarios/:id', auth, controllerDeletarUsuario)
 
 routers.post('/cursos', auth, controllerCadastrarCurso)
 routers.get('/cursos', controllerListarCursos)
@@ -34,5 +35,8 @@ routers.get('/meus-cursos', auth, controllerListarInscricoes)
 
 routers.post('/conclusao/aulas/:aulaId', auth, controllerMarcarAulaConcluida)
 routers.get('/cursos/:cursoId/progresso', auth, controllerObterProgressoCurso)
+
+routers.post('/cursos/:cursoId/avaliar', auth, controllerAvaliarCurso)
+routers.get('/cursos/:cursoId/avaliacoes', auth, controllerListarAvaliacoesDoCurso)
 
 module.exports = routers

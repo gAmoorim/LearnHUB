@@ -84,8 +84,6 @@ const controllerObterProgressoCurso = async (req, res) => {
     }
 }
 
-//testar rotas ObterProgressoCurso
-
 module.exports = {
     controllerMarcarAulaConcluida,
     controllerObterProgressoCurso
