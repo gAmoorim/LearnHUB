@@ -14,7 +14,7 @@ const routers = express()
 routers.post('/login', controllerLoginUsuario)
 
 routers.post('/usuarios', controllerCadastrarUsuario )
-routers.get('/usuarios', auth, controllerListarUsuarios)  // apenas adm lista usuarios (criar tipo adm em usuarios)
+routers.get('/usuarios', auth, controllerListarUsuarios)
 routers.get('/usuarios/:id', auth, controllerObterUsuario)
 routers.delete('/usuarios/:id', auth, controllerDeletarUsuario)
 
