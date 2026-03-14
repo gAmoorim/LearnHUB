@@ -42,6 +42,12 @@ const controllerCadastrarUsuario = async (req,res) => {
 }
 
 const controllerListarUsuarios = async (req, res) => {
+    const usuarioLogado = req.usuario
+
+    if (usuarioLogado.tipo !== 'adm') {
+        return res.status(403).json({ error: 'somente adm pode obter esses dados'})
+    }
+
     try {
         const usuarios = await queryListarUsuarios()
 
