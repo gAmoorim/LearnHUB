@@ -1,6 +1,32 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 
+function SenhaInput({ name, value, onChange, onKeyDown, placeholder, inputRef, hasError }) {
+  const [visivel, setVisivel] = useState(false);
+  return (
+    <div className="senha-wrap">
+      <input
+        ref={inputRef}
+        name={name}
+        type={visivel ? 'text' : 'password'}
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        placeholder={placeholder}
+        className={`auth-input${hasError ? ' input-error' : ''}`}
+      />
+      <button
+        type="button"
+        className="btn-olho"
+        onClick={() => setVisivel(v => !v)}
+        tabIndex={-1}
+      >
+        {visivel ? '🙈' : '👁️'}
+      </button>
+    </div>
+  );
+}
+
 export default function AuthPage({ onSuccess }) {
   const [mode, setMode] = useState('login');
   const [tipo, setTipo] = useState('aluno');
@@ -14,7 +40,6 @@ export default function AuthPage({ onSuccess }) {
   const emailRef = useRef(null);
   const senhaRef = useRef(null);
 
-  // Limpa erros de campo e senha ao trocar de aba
   useEffect(() => {
     setFieldErrors({});
     setError('');
@@ -24,7 +49,6 @@ export default function AuthPage({ onSuccess }) {
   const handle = (e) => {
     const { name, value } = e.target;
     setForm(f => ({ ...f, [name]: value }));
-    // Remove erro do campo ao digitar
     if (fieldErrors[name]) setFieldErrors(fe => ({ ...fe, [name]: false }));
   };
 
@@ -33,14 +57,10 @@ export default function AuthPage({ onSuccess }) {
     if (mode === 'cadastro' && !form.nome.trim()) erros.nome = true;
     if (!form.email.trim()) erros.email = true;
     if (!form.senha.trim()) erros.senha = true;
-
     setFieldErrors(erros);
-
-    // Foca no primeiro campo com erro
     if (erros.nome)  { nomeRef.current?.focus();  return false; }
     if (erros.email) { emailRef.current?.focus(); return false; }
     if (erros.senha) { senhaRef.current?.focus(); return false; }
-
     return Object.keys(erros).length === 0;
   };
 
@@ -64,8 +84,6 @@ export default function AuthPage({ onSuccess }) {
   };
 
   const onKey = (e) => { if (e.key === 'Enter') submit(); };
-
-  const inputClass = (field) => `auth-input${fieldErrors[field] ? ' input-error' : ''}`;
 
   return (
     <div className="auth-bg">
@@ -97,7 +115,7 @@ export default function AuthPage({ onSuccess }) {
                 onChange={handle}
                 onKeyDown={onKey}
                 placeholder="Seu nome"
-                className={inputClass('nome')}
+                className={`auth-input${fieldErrors.nome ? ' input-error' : ''}`}
               />
               {fieldErrors.nome && <span className="field-error-msg">Nome é obrigatório</span>}
             </div>
@@ -113,22 +131,21 @@ export default function AuthPage({ onSuccess }) {
               onChange={handle}
               onKeyDown={onKey}
               placeholder="seu@email.com"
-              className={inputClass('email')}
+              className={`auth-input${fieldErrors.email ? ' input-error' : ''}`}
             />
             {fieldErrors.email && <span className="field-error-msg">E-mail é obrigatório</span>}
           </div>
 
           <div className="field">
             <label>Senha</label>
-            <input
-              ref={senhaRef}
+            <SenhaInput
               name="senha"
-              type="password"
               value={form.senha}
               onChange={handle}
               onKeyDown={onKey}
               placeholder="••••••"
-              className={inputClass('senha')}
+              inputRef={senhaRef}
+              hasError={fieldErrors.senha}
             />
             {fieldErrors.senha && <span className="field-error-msg">Senha é obrigatória</span>}
           </div>

@@ -2,12 +2,12 @@ import { useAuth } from '../context/AuthContext';
 
 const NAV_ALUNO = [
   { id: 'dashboard', icon: '⊡', label: 'Dashboard' },
-  { id: 'cursos', icon: '◈', label: 'Explorar' },
+  { id: 'cursos',    icon: '◈', label: 'Explorar'  },
 ];
 
 const NAV_INSTRUTOR = [
   { id: 'dashboard', icon: '⊡', label: 'Meus Cursos' },
-  { id: 'cursos', icon: '◈', label: 'Explorar' },
+  { id: 'cursos',    icon: '◈', label: 'Explorar'    },
 ];
 
 export default function Sidebar({ pagina, onNav }) {
@@ -22,9 +22,9 @@ export default function Sidebar({ pagina, onNav }) {
       </div>
 
       <div className="sidebar-user">
-        <div className="user-avatar">{user?.email?.[0]?.toUpperCase() || '?'}</div>
+        <div className="user-avatar">{user?.nome?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || '?'}</div>
         <div className="user-info">
-          <span className="user-email">{user?.email}</span>
+          <span className="user-nome">{user?.nome || user?.email}</span>
           <span className={`user-tipo ${user?.tipo}`}>{user?.tipo}</span>
         </div>
       </div>
@@ -40,10 +40,18 @@ export default function Sidebar({ pagina, onNav }) {
             <span>{item.label}</span>
           </button>
         ))}
+
+        <button
+          className={`nav-item ${pagina === 'perfil' ? 'active' : ''}`}
+          onClick={() => onNav('perfil')}
+        >
+          <span className="nav-icon">👤</span>
+          <span>Meu Perfil</span>
+        </button>
       </nav>
 
       <button className="btn-logout" onClick={logout}>
-        <span>⏻</span> Sair
+        <span>⏻</span> <span>Sair</span>
       </button>
     </aside>
   );

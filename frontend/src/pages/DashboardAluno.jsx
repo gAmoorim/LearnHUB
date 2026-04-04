@@ -12,45 +12,26 @@ export default function DashboardAluno({ onVerCurso }) {
     const carregar = async () => {
       try {
         const data = await api.meusCursos();
-        // GET /meus-cursos retorna { mensagem, cursos: [...] }
-        // Cada item é a inscrição: { id, aluno_id, curso_id, data_inscricao }
-        // OU pode já vir com join: { curso_id, titulo, descricao, ... }
+        // GET /meus-cursos → { mensagem, cursos: [{ curso_id, nome_curso, data_inscricao }] }
         const lista = Array.isArray(data) ? data : (data?.cursos || []);
 
-        // Enriquece com dados do curso se não tiver título
-        const cursosCompletos = await Promise.all(
-          lista.map(async (item) => {
-            if (item.titulo) return item; // já veio com join
+        setMeusCursos(lista);
 
-            const cursoId = item.curso_id || item.id;
-            if (!cursoId) return item;
-
-            try {
-              const resp = await api.obterCurso(cursoId);
-              // GET /cursos/:id retorna { curso: [{}] }
-              const c = Array.isArray(resp?.curso) ? resp.curso[0] : (resp?.curso || resp);
-              return { ...item, ...c, _cursoId: cursoId };
-            } catch {
-              return { ...item, titulo: `Curso #${cursoId}`, _cursoId: cursoId };
-            }
-          })
-        );
-
-        setMeusCursos(cursosCompletos);
-
-        // Carrega progresso de cada curso
+        // Carrega progresso de cada curso pelo curso_id
         const progs = {};
-        await Promise.all(cursosCompletos.map(async (c) => {
-          const id = c.curso_id || c._cursoId || c.id;
+        await Promise.all(lista.map(async (item) => {
+          const id = item.curso_id;
           try {
             const p = await api.obterProgresso(id);
             progs[id] = p?.percentual ?? 0;
-          } catch { progs[id] = 0; }
+          } catch {
+            progs[id] = 0;
+          }
         }));
         setProgressos(progs);
-      } catch (e) {
-        // 404 = sem inscrições ainda
-        console.error('Erro ao carregar meus cursos:', e);
+      } catch {
+        // 404 = sem inscrições ainda — não é erro real
+        setMeusCursos([]);
       } finally {
         setLoading(false);
       }
@@ -58,12 +39,8 @@ export default function DashboardAluno({ onVerCurso }) {
     carregar();
   }, []);
 
-  const getId = (c) => c.curso_id || c._cursoId || c.id;
-  const concluidos  = meusCursos.filter(c => progressos[getId(c)] === 100).length;
-  const emAndamento = meusCursos.filter(c => {
-    const p = progressos[getId(c)];
-    return p > 0 && p < 100;
-  }).length;
+  const concluidos  = meusCursos.filter(c => progressos[c.curso_id] === 100).length;
+  const emAndamento = meusCursos.filter(c => progressos[c.curso_id] > 0 && progressos[c.curso_id] < 100).length;
 
   return (
     <div className="page-content">
@@ -112,8 +89,8 @@ export default function DashboardAluno({ onVerCurso }) {
         </div>
       ) : (
         <div className="meus-cursos-list">
-          {meusCursos.map((curso) => {
-            const id  = getId(curso);
+          {meusCursos.map((item) => {
+            const id  = item.curso_id;
             const pct = progressos[id] ?? 0;
             return (
               <div key={id} className="meu-curso-card" onClick={() => onVerCurso(id)}>
@@ -121,8 +98,11 @@ export default function DashboardAluno({ onVerCurso }) {
                   {pct === 100 ? '🏆' : pct > 0 ? '▶️' : '📘'}
                 </div>
                 <div className="meu-curso-info">
-                  <h4>{curso.titulo || `Carregando...`}</h4>
-                  {curso.descricao && <p>{curso.descricao}</p>}
+                  {/* nome_curso é o campo retornado pelo join */}
+                  <h4>{item.nome_curso || item.titulo || `Curso #${id}`}</h4>
+                  <p className="inscricao-data">
+                    Inscrito em {new Date(item.data_inscricao).toLocaleDateString('pt-BR')}
+                  </p>
                   <div className="progress-bar-wrap">
                     <div className="progress-bar">
                       <div className="progress-fill" style={{ width: `${pct}%` }} />

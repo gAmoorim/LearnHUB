@@ -19,6 +19,9 @@ const queryListarCursosInscritos = async (alunoId) => {
   .select(
     'inscricoes.curso_id',
     'cursos.titulo as nome_curso',
+    'cursos.descricao',
+    'cursos.categoria',
+    'cursos.preco',
     'inscricoes.data_inscricao'
   )
 }

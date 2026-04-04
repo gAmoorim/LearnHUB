@@ -3,29 +3,40 @@ import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 export default function CursosPage({ onVerCurso }) {
-  const [cursos, setCursos]       = useState([]);
-  const [loading, setLoading]     = useState(true);
-  const [search, setSearch]       = useState('');
+  const [cursos, setCursos]           = useState([]);
+  const [inscritos, setInscritos]     = useState(new Set()); // Set de curso_id já inscritos
+  const [loading, setLoading]         = useState(true);
+  const [search, setSearch]           = useState('');
   const [inscrevendo, setInscrevendo] = useState(null);
-  const [msg, setMsg]             = useState('');
+  const [msg, setMsg]                 = useState('');
   const { user } = useAuth();
 
   const flash = (texto) => { setMsg(texto); setTimeout(() => setMsg(''), 3000); };
 
   useEffect(() => {
-    api.listarCursos()
-      .then(data => {
-        // GET /cursos retorna { mensagem, cursos: [...] }
-        // Se não houver cursos, o backend retorna 404 — o catch trata isso
-        const lista = Array.isArray(data) ? data : (data?.cursos || []);
-        setCursos(lista);
-      })
-      .catch(e => {
-        // 404 = nenhum curso cadastrado ainda (não é erro real)
-        if (!e.message?.includes('404')) console.error(e);
-        setCursos([]);
-      })
-      .finally(() => setLoading(false));
+    const carregar = async () => {
+      // Carrega cursos
+      const dataCursos = await api.listarCursos().catch(() => ({}));
+      const lista = Array.isArray(dataCursos) ? dataCursos : (dataCursos?.cursos || []);
+      setCursos(lista);
+
+      // Se for aluno, carrega inscrições para marcar os cursos já inscritos
+      if (user?.tipo === 'aluno') {
+        try {
+          const dataInscritos = await api.meusCursos();
+          const listaInscritos = Array.isArray(dataInscritos)
+            ? dataInscritos
+            : (dataInscritos?.cursos || []);
+          setInscritos(new Set(listaInscritos.map(c => String(c.curso_id))));
+        } catch {
+          // 404 = sem inscrições ainda
+          setInscritos(new Set());
+        }
+      }
+
+      setLoading(false);
+    };
+    carregar();
   }, []);
 
   const inscrever = async (id, e) => {
@@ -33,6 +44,7 @@ export default function CursosPage({ onVerCurso }) {
     setInscrevendo(id);
     try {
       await api.inscreverCurso(id);
+      setInscritos(prev => new Set([...prev, String(id)]));
       flash('Inscrição realizada com sucesso! 🎉');
     } catch (err) {
       flash(err.message);
@@ -47,8 +59,17 @@ export default function CursosPage({ onVerCurso }) {
     c.categoria?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const palettes = ['#E8D5B7', '#B7D5E8', '#D5E8B7', '#E8B7D5', '#B7E8D5', '#D5B7E8'];
-  const icons    = ['📘', '🔬', '🎨', '💻', '🎯', '🚀'];
+  // Agrupa por categoria
+  const porCategoria = filtered.reduce((acc, curso) => {
+    const cat = curso.categoria || 'Sem categoria';
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(curso);
+    return acc;
+  }, {});
+  const categorias = Object.keys(porCategoria).sort();
+
+  const icons = ['📘', '🔬', '🎨', '💻', '🎯', '🚀', '📊', '🎵', '🌍', '⚙️'];
+  let cardIdx = 0;
 
   return (
     <div className="page-content">
@@ -79,40 +100,57 @@ export default function CursosPage({ onVerCurso }) {
           <p>{search ? 'Nenhum curso encontrado para essa busca' : 'Nenhum curso cadastrado ainda'}</p>
         </div>
       ) : (
-        <div className="cursos-grid">
-          {filtered.map((curso, i) => (
-            <div
-              key={curso.id}
-              className="curso-card"
-              onClick={() => onVerCurso(curso.id)}
-              style={{ '--accent-card': palettes[i % palettes.length] }}
-            >
-              <div className="curso-card-top">
-                <div className="curso-thumb">
-                  <span className="curso-icon">{icons[i % icons.length]}</span>
-                </div>
-                <div className="curso-card-meta">
-                  {curso.categoria && <span className="curso-categoria">{curso.categoria}</span>}
-                  <span className="curso-preco">
-                    {curso.preco > 0 ? `R$ ${Number(curso.preco).toFixed(2)}` : 'Gratuito'}
-                  </span>
-                </div>
+        <div className="categorias-wrap">
+          {categorias.map(cat => (
+            <div key={cat} className="categoria-secao">
+              <div className="categoria-header">
+                <h3 className="categoria-nome">{cat}</h3>
+                <span className="categoria-count">
+                  {porCategoria[cat].length} curso{porCategoria[cat].length !== 1 ? 's' : ''}
+                </span>
               </div>
-              <div className="curso-card-body">
-                <h3>{curso.titulo}</h3>
-                <p>{curso.descricao}</p>
-              </div>
-              <div className="curso-card-footer">
-                <span className="instrutor-tag">Instrutor #{curso.instrutor_id}</span>
-                {user?.tipo === 'aluno' && (
-                  <button
-                    className="btn-inscrever"
-                    onClick={(e) => inscrever(curso.id, e)}
-                    disabled={inscrevendo === curso.id}
-                  >
-                    {inscrevendo === curso.id ? '...' : 'Inscrever-se'}
-                  </button>
-                )}
+
+              <div className="cursos-grid">
+                {porCategoria[cat].map((curso) => {
+                  const icon = icons[cardIdx % icons.length];
+                  cardIdx++;
+                  const jaInscrito = inscritos.has(String(curso.id));
+
+                  return (
+                    <div key={curso.id} className="curso-card" onClick={() => onVerCurso(curso.id)}>
+                      <div className="curso-card-top">
+                        <div className="curso-thumb">
+                          <span className="curso-icon">{icon}</span>
+                        </div>
+                        <div className="curso-card-meta">
+                          <span className="curso-preco">
+                            {Number(curso.preco) > 0 ? `R$ ${Number(curso.preco).toFixed(2)}` : 'Gratuito'}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="curso-card-body">
+                        <h3>{curso.titulo}</h3>
+                        <p>{curso.descricao}</p>
+                      </div>
+                      <div className="curso-card-footer">
+                        <span className="instrutor-tag">Instrutor #{curso.instrutor_id}</span>
+                        {user?.tipo === 'aluno' && (
+                          jaInscrito ? (
+                            <span className="ja-inscrito-tag">✓ Inscrito</span>
+                          ) : (
+                            <button
+                              className="btn-inscrever"
+                              onClick={(e) => inscrever(curso.id, e)}
+                              disabled={inscrevendo === curso.id}
+                            >
+                              {inscrevendo === curso.id ? '...' : 'Inscrever-se'}
+                            </button>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}

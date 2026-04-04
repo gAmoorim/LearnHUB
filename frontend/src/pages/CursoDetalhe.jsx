@@ -132,9 +132,27 @@ export default function CursoDetalhe({ cursoId, onVoltar }) {
       try {
         await carregarCurso();
         if (user?.tipo === 'aluno') {
-          api.obterProgresso(cursoId)
-            .then(p => { setProgresso(p?.percentual ?? 0); setInscrito(true); })
-            .catch(() => { setProgresso(null); setInscrito(false); });
+          try {
+            const data = await api.meusCursos();
+            const lista = Array.isArray(data) ? data : (data?.cursos || []);
+            const estaInscrito = lista.some(c =>
+              String(c.curso_id) === String(cursoId)
+            );
+            setInscrito(estaInscrito);
+
+            if (estaInscrito) {
+              // Só busca progresso se realmente inscrito
+              api.obterProgresso(cursoId)
+                .then(p => setProgresso(p?.percentual ?? 0))
+                .catch(() => setProgresso(0));
+            } else {
+              setProgresso(null);
+            }
+          } catch {
+            // 404 = sem nenhuma inscrição ainda
+            setInscrito(false);
+            setProgresso(null);
+          }
         }
       } catch (e) {
         console.error(e);
