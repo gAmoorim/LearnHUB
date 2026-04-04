@@ -263,7 +263,6 @@ export default function DashboardInstrutor({ onVerCurso }) {
         <div className="curso-editor">
           {!cursoAtivo ? (
             <div className="empty-state">
-              <span>👈</span>
               <p>Selecione um curso para gerenciar</p>
             </div>
           ) : (

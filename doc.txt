@@ -18,6 +18,11 @@ controllerLoginUsuario (POST /login)
     º Gera token JWT com id e tipo de usuário
     º Retorna: 200 OK + token JWT
 
+controllerAtualizarUsuario 
+
+
+controllerAtualizarSenhaUsuario 
+
 --RESTRINGIR A ADMIN--
 
 controllerListarUsuarios (GET /usuarios)
@@ -80,6 +85,18 @@ controllerListarModulos (GET /cursos/:cursoId/modulos)
     º Inclui aulas de cada módulo
     º Retorna: 200 OK + array de módulos
 
+controllerAtualizarModulo (PUT /modulos/:moduloId) [ so o instrutor dono ou adm ]
+    º Body: titulo
+    º Valida se curso pertence ao instrutor logado
+    º Atualiza dados no banco
+    º Retorna: 200 OK + curso atualizado
+ 
+controllerDeletarModulo (DELETE /modulos/:moduloId) [ so o instrutor dono ou adm ]
+    º Valida permissão do instrutor
+    º deletar o modulo
+    º Retorna: 204 No Content
+
+
 🔹 Aulas
 
 controllerCriarAula (POST aulas/modulos/:moduloId) [instrutor dono]
@@ -91,6 +108,17 @@ controllerCriarAula (POST aulas/modulos/:moduloId) [instrutor dono]
 controllerListarAulas (/aulas/modulos/:moduloId)
     º Lista aulas do módulo
     º Retorna: 200 OK + array de aulas
+
+controllerAtualizarAula (PUT /aulas/:aulaId) [ so o instrutor dono ou adm]
+    º Body: titulo, conteudo, tipo
+    º Valida se curso pertence ao instrutor logado
+    º Atualiza dados no banco
+    º Retorna: 200 OK + curso atualizado
+
+controllerDeletarAula (DELETE /aulas/:aulaId) [ so o instrutor dono ou adm ]
+    º Valida permissão do instrutor
+    º deleta aula
+    º Retorna: 204 No Content
 
 🔹 Inscrições
 

@@ -45,27 +45,24 @@ export default function DashboardAluno({ onVerCurso }) {
   return (
     <div className="page-content">
       <div className="dashboard-welcome">
-        <h2>Olá, bem-vindo de volta! 👋</h2>
+        <h2>Olá, bem-vindo de volta!</h2>
         <p>Continue de onde parou</p>
       </div>
 
       <div className="stats-row">
         <div className="stat-card">
-          <span className="stat-icon">📚</span>
           <div className="stat-info">
             <span className="stat-num">{meusCursos.length}</span>
             <span className="stat-label">Inscrições</span>
           </div>
         </div>
         <div className="stat-card">
-          <span className="stat-icon">▶️</span>
           <div className="stat-info">
             <span className="stat-num">{emAndamento}</span>
             <span className="stat-label">Em andamento</span>
           </div>
         </div>
         <div className="stat-card">
-          <span className="stat-icon">✅</span>
           <div className="stat-info">
             <span className="stat-num">{concluidos}</span>
             <span className="stat-label">Concluídos</span>
