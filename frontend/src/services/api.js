@@ -27,7 +27,7 @@ export const api = {
   listarUsuarios:       ()       => request('GET',    '/usuarios'),
   obterUsuario:         (id)     => request('GET',    `/usuarios/${id}`),
   atualizarUsuario:     (body)   => request('PUT',    '/usuarios', body),
-  atualizarSenha:       (body)   => request('PATCH',    '/usuarios/senha', body),
+  atualizarSenha:       (body)   => request('PUT',    '/usuarios/senha', body),
   deletarUsuario:       (id)     => request('DELETE', `/usuarios/${id}`),
 
   // Cursos — GET /cursos retorna { mensagem, cursos: [...] }
@@ -38,12 +38,16 @@ export const api = {
   deletarCurso:   (id)        => request('DELETE', `/cursos/${id}`),
 
   // Módulos
-  criarModulo:   (cursoId, body) => request('POST', `/modulos/${cursoId}`, body),
-  listarModulos: (cursoId)       => request('GET',  `/cursos/${cursoId}/modulos`),
+  criarModulo:    (cursoId, body)  => request('POST',   `/modulos/${cursoId}`, body),
+  listarModulos:  (cursoId)        => request('GET',    `/cursos/${cursoId}/modulos`),
+  atualizarModulo:(moduloId, body) => request('PUT',    `/modulos/${moduloId}`, body),
+  deletarModulo:  (moduloId)       => request('DELETE', `/modulos/${moduloId}`),
 
   // Aulas
-  criarAula:   (moduloId, body) => request('POST', `/aulas/modulos/${moduloId}`, body),
-  listarAulas: (moduloId)       => request('GET',  `/aulas/modulos/${moduloId}`),
+  criarAula:    (moduloId, body) => request('POST',   `/aulas/modulos/${moduloId}`, body),
+  listarAulas:  (moduloId)       => request('GET',    `/aulas/modulos/${moduloId}`),
+  atualizarAula:(aulaId, body)   => request('PUT',    `/aulas/${aulaId}`, body),
+  deletarAula:  (aulaId)         => request('DELETE', `/aulas/${aulaId}`),
 
   // Inscrições — GET /meus-cursos retorna { cursos: [{curso_id, ...}] } ou 404
   inscreverCurso: (id) => request('POST', `/cursos/${id}/inscrever`),
