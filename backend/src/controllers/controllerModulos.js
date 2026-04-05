@@ -86,6 +86,10 @@ const controllerAtualizarModulo = async (req, res) => {
     try {
         const curso = await queryBuscarCursoPorModulo(moduloId)
 
+        if (!curso) {
+            return res.status(404).json({ error: 'Curso ou modulo não existe'})
+        }
+
         const cursoId = curso.curso_id
 
         const cursoPertencente = await queryCursoPertencente(instrutorId, cursoId)
@@ -115,8 +119,14 @@ const controllerDeletarModulo = async (req, res) => {
     const instrutorId = req.usuario.id
 
     try {
-        const cursoId = await queryBuscarCursoPorModulo(moduloId)
-    
+        const curso = await queryBuscarCursoPorModulo(moduloId)
+
+        if (!curso) {
+            return res.status(404).json({ error: 'Curso ou modulo não existe'})
+        }
+
+        const cursoId = curso.curso_id
+
         const cursoPertencente = await queryCursoPertencente(instrutorId, cursoId)
 
         if (!cursoPertencente) {
@@ -124,6 +134,8 @@ const controllerDeletarModulo = async (req, res) => {
         }
 
         await queryDeletarModulo(moduloId)
+
+        return res.status(204).json({ mensagem: 'Modulo deletado!'})
     } catch (error) {
         console.log('Ocorreu um erro ao deletar o modulo', error)
         return res.status(500).json({ error: `Erro ao deletar o modulo: ${error.message}`})

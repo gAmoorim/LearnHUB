@@ -3,7 +3,7 @@ const { controllerCadastrarUsuario, controllerListarUsuarios, controllerObterUsu
 const { controllerLoginUsuario } = require('../controllers/controllerLogin.js')
 const { controllerCadastrarCurso, controllerListarCursos, controllerObterCurso, controllerAtualizarCurso, controllerDeletarCurso } = require('../controllers/controllerCursos.js')
 const { controllerCadastrarModulo, controllerListarModulos, controllerAtualizarModulo, controllerDeletarModulo } = require('../controllers/controllerModulos.js')
-const { controllerCadastrarAula, controllerListarAulas } = require('../controllers/controllerAulas.js')
+const { controllerCadastrarAula, controllerListarAulas, controllerAtualizarAula, controllerDeletarAula } = require('../controllers/controllerAulas.js')
 const { controllerInscreverseNoCurso, controllerListarInscricoes } = require('../controllers/controllerInscricoes.js')
 const { controllerMarcarAulaConcluida, controllerObterProgressoCurso } = require('../controllers/controllerProgreso.js')
 const { controllerAvaliarCurso, controllerListarAvaliacoesDoCurso } = require('../controllers/controllerAvaliacoes.js')
@@ -33,6 +33,8 @@ routers.delete('/modulos/:moduloId', auth, controllerDeletarModulo)
 
 routers.post('/aulas/modulos/:moduloId', auth, controllerCadastrarAula)
 routers.get('/aulas/modulos/:moduloId', controllerListarAulas)
+routers.put('/aulas/:aulaId', auth, controllerAtualizarAula)
+routers.delete('/aulas/:aulaId', auth, controllerDeletarAula)
 
 routers.post('/cursos/:cursoId/inscrever', auth, controllerInscreverseNoCurso)
 routers.get('/meus-cursos', auth, controllerListarInscricoes)

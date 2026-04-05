@@ -1,4 +1,5 @@
-const { queryCadastrarAula, queryListarAulasPorModulo } = require("../database/querys/queryAulas")
+const { queryCadastrarAula, queryListarAulasPorModulo, queryBuscarCursoPorAula, queryAtualizarAula, queryDeletarAula } = require("../database/querys/queryAulas")
+const { queryCursoPertencente } = require("../database/querys/queryCursos")
 const { queryBuscarCursoPorModulo } = require("../database/querys/queryModulos")
 
 const controllerCadastrarAula = async (req, res) => {
@@ -41,6 +42,80 @@ const controllerCadastrarAula = async (req, res) => {
   }
 }
 
+const controllerAtualizarAula = async (req, res) => {
+  const { titulo, conteudo, tipo } = req.body
+
+  if (!titulo && !conteudo && !tipo) {
+    return res.status(400).json({ error: 'informe os campos a serem atualizado'})
+  }
+
+  const { aulaId } = req.params
+
+  if (!aulaId) {
+    return res.status(400).json9({ error: 'Informe o id do modulo'})
+  }
+    
+  const instrutorId = req.usuario.id
+
+  try {
+    const curso = await queryBuscarCursoPorAula(aulaId)
+
+    if (!curso) {
+      return res.status(404).json({ error: 'Curso ou aula não existe'})
+    }
+
+    const cursoId = curso.curso_id
+
+    const cursoPertencente = await queryCursoPertencente(instrutorId, cursoId)
+
+    if (!cursoPertencente) {
+      return res.status(404).json({ error: 'Este curso não existe ou não pertence ao instrutor'})
+    }
+
+    const aulaAtualizada = await queryAtualizarAula(aulaId, titulo, conteudo, tipo)
+
+    return res.status(200).json({ mensagem: 'Aula atualizado com sucesso',
+      aulaAtualizada
+    })
+  } catch (error) {
+    console.log('Ocorreu um erro ao atualizar a aula', error)
+    return res.status(500).json({ error: `Erro ao atualizar a aula: ${error.message}`})
+  }
+}
+
+const controllerDeletarAula = async (req, res) => {
+  const { aulaId } = req.params
+
+  if (!aulaId) {
+    return res.status(400).json({ error: 'Informe o id do modulo'})
+  }
+
+  const instrutorId = req.usuario.id
+
+  try {
+    const curso = await queryBuscarCursoPorAula(aulaId)
+
+    if (!curso) {
+      return res.status(404).json({ error: 'Curso ou aula não existe'})
+    }
+
+    const cursoId = curso.curso_id
+
+    const cursoPertencente = await queryCursoPertencente(instrutorId, cursoId)
+
+    if (!cursoPertencente) {
+      return res.status(404).json({ error: 'Este curso não existe ou não pertence ao instrutor'})
+    }
+
+    await queryDeletarAula(aulaId)
+
+    return res.status(204).json({ mensagem: 'Aula deletada!'})
+  } catch (error) {
+    console.log('Ocorreu um erro ao deletar o modulo', error)
+    return res.status(500).json({ error: `Erro ao deletar o modulo: ${error.message}`})
+  }
+}
+
 const controllerListarAulas = async (req, res) => {
   const {moduloId} = req.params
 
@@ -51,7 +126,7 @@ const controllerListarAulas = async (req, res) => {
   try {
     const aulas = await queryListarAulasPorModulo(moduloId)
 
-    if (!aulas) {
+    if (!aulas.length) {
       return res.status(404).json({ error: 'Nenhuma aula encontrada'})
     }
 
@@ -66,5 +141,7 @@ const controllerListarAulas = async (req, res) => {
 
 module.exports = {
   controllerCadastrarAula,
-  controllerListarAulas
+  controllerListarAulas,
+  controllerAtualizarAula,
+  controllerDeletarAula
 }

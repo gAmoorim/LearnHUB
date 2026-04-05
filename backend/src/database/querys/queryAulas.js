@@ -9,7 +9,13 @@ const queryCadastrarAula = async (titulo, conteudo, tipo, moduloId, cursoId) => 
 const queryListarAulasPorModulo = async (moduloId) => {
     return await knex('aulas')
     .where({modulo_id: moduloId})
-    .select('*')
+}
+
+const queryAtualizarAula = async (aulaId, titulo, conteudo, tipo) => {
+    return await knex('aulas')
+    .where({ id: aulaId})
+    .update({titulo, conteudo, tipo})
+    .returning([ 'titulo', 'conteudo', 'tipo' ])
 }
 
 const queryObterAulaPorId = async (aulaId) => {
@@ -18,8 +24,24 @@ const queryObterAulaPorId = async (aulaId) => {
     .first()
 }
 
+const queryDeletarAula = async (aulaId) =>{
+    return knex('aulas')
+    .where({ id: aulaId})
+    .del()
+}
+
+const queryBuscarCursoPorAula = async (aulaId) => {
+  return await knex('aulas')
+  .where({id: aulaId})
+  .select('curso_id')
+  .first()
+}
+
 module.exports = {
     queryCadastrarAula,
     queryListarAulasPorModulo,
-    queryObterAulaPorId
+    queryObterAulaPorId,
+    queryAtualizarAula,
+    queryBuscarCursoPorAula,
+    queryDeletarAula
 }
