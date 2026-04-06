@@ -67,7 +67,7 @@ const controllerObterProgressoCurso = async (req, res) => {
 
         const aulasConcluidas = await queryCalcularAulasConcluidas(cursoId, alunoId)
 
-        if (!aulasConcluidas) {
+        if (aulasConcluidas === null || aulasConcluidas === undefined) {
             return res.status(400).json({ error: 'Nenhuma aula concluida'})
         }
 

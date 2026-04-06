@@ -99,6 +99,11 @@ export default function AuthPage({ onSuccess }) {
       </div>
 
       <div className="auth-right">
+        <div className="auth-mobile-brand">
+          <span className="brand-icon-sm">◈</span>
+          <span>Learn<em>HUB</em></span>
+        </div>
+
         <div className="auth-card">
           <div className="tab-switcher">
             <button className={mode === 'login' ? 'active' : ''} onClick={() => setMode('login')}>Entrar</button>
