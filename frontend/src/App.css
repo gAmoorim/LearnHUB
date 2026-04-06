@@ -1111,8 +1111,6 @@ body {
 /* ── CATEGORIAS ── */
 .categorias-wrap { display: flex; flex-direction: column; gap: 2.5rem; }
 
-.categoria-secao {}
-
 .categoria-header {
   display: flex;
   align-items: center;
