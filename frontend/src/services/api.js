@@ -33,7 +33,7 @@ export const api = {
   // Cursos — GET /cursos retorna { mensagem, cursos: [...] }
   criarCurso:     (body)      => request('POST',   '/cursos', body),
   listarCursos:   (params='') => request('GET',    `/cursos${params}`),
-  obterCurso:     (id)        => request('GET',    `/cursos/${id}`),   // retorna { curso: [{}] }
+  obterCurso:     (id)        => request('GET',    `/cursos/${id}`),
   atualizarCurso: (id, body)  => request('PUT',    `/cursos/${id}`, body),
   deletarCurso:   (id)        => request('DELETE', `/cursos/${id}`),
 
