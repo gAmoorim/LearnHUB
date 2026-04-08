@@ -153,34 +153,28 @@ const controllerDeletarUsuario = async (req, res) => {
     const { id } = req.params
 
     if (!id) {
-        return res.status(400).json({ error: 'Erro ao obter o id do usuario'})
+        return res.status(400).json({ error: 'Erro ao obter o id do usuario' })
     }
 
     try {
         const usuarioLogado = req.usuario
 
         if (String(usuarioLogado.id) !== String(id) && usuarioLogado.tipo !== 'adm') {
-            return res.status(403).json({ error: 'somente o proprio usuario ou um adm pode obter seus dados'})
-        }
-        
-        const usuarioId = req.usuario.id
-
-        if (usuarioId !== id) {
-            return res.status(400).json({ error: 'somente o proprio usuario ou um adm pode deletar a conta'})
+            return res.status(403).json({ error: 'somente o proprio usuario ou um adm pode deletar a conta' })
         }
 
         const usuario = await queryBuscarUsuarioPeloId(id)
 
         if (!usuario) {
-            return res.status(404).json({ error: 'Usuário não encontrado'})
+            return res.status(404).json({ error: 'Usuário não encontrado' })
         }
 
         await queryDeletarUsuario(id)
 
-        return res.status(204).json({ mensagem: 'Usuário deletado com sucesso'})
+        return res.status(204).send()
     } catch (error) {
         console.error("Ocorreu um erro ao deletar o usuário:", error)
-        return res.status(500).json({ error: `Erro ao deletar o usuário: ${error.message}`})
+        return res.status(500).json({ error: `Erro ao deletar o usuário: ${error.message}` })
     }
 }
 
