@@ -1,7 +1,7 @@
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
 const { queryBuscarUsuarioPeloId } = require('../database/querys/queryUsuarios')
-const senhaJWT = process.env.JWt_PWD
+const senhaJWT = process.env.JWT_PWD
 
 const auth = async (req, res, next) => {
     const { authorization } = req.headers
