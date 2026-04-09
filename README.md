@@ -64,16 +64,14 @@ JWT_PWD=
 ### Frontend (`frontend/.env`)
 
 ```env
-VITE_API_URL=http://localhost:3000
+
 ```
 
 > Consulte os arquivos `.env.example` em cada pasta para referência.
 
 ---
 
-## 🚀 Rodando Localmente
-
-**Pré-requisitos:** Node.js 18+, PostgreSQL
+## Rodando Localmente
 
 ```bash
 # Clone o repositório
@@ -83,13 +81,12 @@ cd LearnHUB
 # Backend
 cd backend
 npm install
-cp .env.example .env  # preencha as variáveis
+.env  # preencha as variáveis
 npm run dev
 
 # Frontend (em outro terminal)
 cd frontend
 npm install
-cp .env.example .env  # preencha VITE_API_URL=http://localhost:3000
 npm run dev
 ```
 
@@ -164,8 +161,6 @@ As rotas protegidas exigem o token JWT no header:
 ```
 Authorization: Bearer <token>
 ```
-
-O token é retornado no login e deve ser armazenado no cliente.
 
 ---
 
