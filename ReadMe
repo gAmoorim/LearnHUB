@@ -1,0 +1,182 @@
+# 📚 LearnHUB
+
+Plataforma de ensino online onde instrutores podem criar e gerenciar cursos, e alunos podem se inscrever, acompanhar seu progresso e avaliar o conteúdo.
+
+🔗 **Deploy:** [yourlearnhub.vercel.app](https://yourlearnhub.vercel.app)
+
+---
+
+## 🛠️ Tecnologias
+
+**Backend**
+- Node.js + Express
+- PostgreSQL (hospedado na [Neon](https://neon.tech))
+- JWT para autenticação
+- Bcrypt para criptografia de senhas
+
+**Frontend**
+- React + Vite
+- Fetch API para comunicação com o backend
+
+**Infraestrutura**
+- Vercel (deploy fullstack via `experimentalServices`)
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+LearnHUB/
+├── backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── database/
+│   │   ├── middlewares/
+│   │   ├── routers/
+│   │   ├── utils/
+│   │   ├── app.js
+│   │   └── server.js
+│   ├── .env.example
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   ├── index.html
+│   ├── .env.example
+│   └── package.json
+└── vercel.json
+```
+
+---
+
+## ⚙️ Variáveis de Ambiente
+
+### Backend (`backend/.env`)
+
+```env
+DB_HOST=
+DB_PORT=
+DB_USER=
+DB_PASSWORD=
+DB_NAME=
+JWT_PWD=
+```
+
+### Frontend (`frontend/.env`)
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+> Consulte os arquivos `.env.example` em cada pasta para referência.
+
+---
+
+## 🚀 Rodando Localmente
+
+**Pré-requisitos:** Node.js 18+, PostgreSQL
+
+```bash
+# Clone o repositório
+git clone https://github.com/gAmoorim/LearnHUB.git
+cd LearnHUB
+
+# Backend
+cd backend
+npm install
+cp .env.example .env  # preencha as variáveis
+npm run dev
+
+# Frontend (em outro terminal)
+cd frontend
+npm install
+cp .env.example .env  # preencha VITE_API_URL=http://localhost:3000
+npm run dev
+```
+
+---
+
+## 📡 Rotas da API
+
+### Autenticação
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| POST | `/usuarios` | Cadastrar usuário |
+| POST | `/login` | Login e geração de token JWT |
+
+### Usuários
+| Método | Rota | Auth | Descrição |
+|--------|------|------|-----------|
+| GET | `/usuarios` | ✅ | Listar usuários |
+| GET | `/usuarios/:id` | ✅ | Obter usuário |
+| PUT | `/usuarios` | ✅ | Atualizar dados |
+| PATCH | `/usuarios/senha` | ✅ | Atualizar senha |
+| DELETE | `/usuarios/:id` | ✅ | Deletar conta |
+
+### Cursos
+| Método | Rota | Auth | Descrição |
+|--------|------|------|-----------|
+| POST | `/cursos` | ✅ instrutor | Criar curso |
+| GET | `/cursos` | ❌ | Listar cursos |
+| GET | `/cursos/:id` | ❌ | Obter curso completo |
+| PUT | `/cursos/:id` | ✅ instrutor | Atualizar curso |
+| DELETE | `/cursos/:id` | ✅ instrutor | Deletar curso |
+
+### Módulos
+| Método | Rota | Auth | Descrição |
+|--------|------|------|-----------|
+| POST | `/modulos/:cursoId` | ✅ instrutor | Criar módulo |
+| GET | `/cursos/:cursoId/modulos` | ❌ | Listar módulos |
+| PUT | `/modulos/:id` | ✅ instrutor | Atualizar módulo |
+| DELETE | `/modulos/:id` | ✅ instrutor | Deletar módulo |
+
+### Aulas
+| Método | Rota | Auth | Descrição |
+|--------|------|------|-----------|
+| POST | `/aulas/modulos/:moduloId` | ✅ instrutor | Criar aula |
+| GET | `/aulas/modulos/:moduloId` | ❌ | Listar aulas |
+| PUT | `/aulas/:id` | ✅ instrutor | Atualizar aula |
+| DELETE | `/aulas/:id` | ✅ instrutor | Deletar aula |
+
+### Inscrições
+| Método | Rota | Auth | Descrição |
+|--------|------|------|-----------|
+| POST | `/cursos/:id/inscrever` | ✅ aluno | Inscrever-se no curso |
+| GET | `/meus-cursos` | ✅ aluno | Listar cursos inscritos |
+
+### Progresso
+| Método | Rota | Auth | Descrição |
+|--------|------|------|-----------|
+| POST | `/conclusao/aulas/:aulaId` | ✅ aluno | Marcar aula como concluída |
+| GET | `/cursos/:id/progresso` | ✅ aluno | Obter progresso no curso |
+
+### Avaliações
+| Método | Rota | Auth | Descrição |
+|--------|------|------|-----------|
+| POST | `/cursos/:id/avaliar` | ✅ aluno inscrito | Avaliar curso |
+| GET | `/cursos/:id/avaliacoes` | ✅ | Listar avaliações |
+
+---
+
+## 🔐 Autenticação
+
+As rotas protegidas exigem o token JWT no header:
+
+```
+Authorization: Bearer <token>
+```
+
+O token é retornado no login e deve ser armazenado no cliente.
+
+---
+
+## 🗄️ Banco de Dados
+
+O schema completo está disponível no arquivo [`dump.sql`](./dump.sql) na raiz do projeto.
+
+---
+
+## 👤 Tipos de Usuário
+
+- **aluno** — pode se inscrever em cursos, acompanhar progresso e avaliar
+- **instrutor** — pode criar e gerenciar cursos, módulos e aulas
+- **adm** — acesso administrativo completo
