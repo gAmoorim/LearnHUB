@@ -7,7 +7,7 @@ const controllerLoginUsuario = async (req, res) => {
     const { email, senha} = req.body
 
     if (!email || !senha) {
-        return res.status(400).json({ error: ''})
+        return res.status(400).json({ error: 'Preencha os campos'})
     }
 
     try {
