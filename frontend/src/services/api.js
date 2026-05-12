@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const BASE_URL = import.meta.env.VITE_API_URL
 
 const getToken = () => localStorage.getItem('learnhub_token');
 
@@ -27,7 +27,7 @@ export const api = {
   listarUsuarios:       ()       => request('GET',    '/usuarios'),
   obterUsuario:         (id)     => request('GET',    `/usuarios/${id}`),
   atualizarUsuario:     (body)   => request('PUT',    '/usuarios', body),
-  atualizarSenha:       (body)   => request('PUT',    '/usuarios/senha', body),
+  atualizarSenha:       (body)   => request('PATCH',    '/usuarios/senha', body),
   deletarUsuario:       (id)     => request('DELETE', `/usuarios/${id}`),
 
   // Cursos — GET /cursos retorna { mensagem, cursos: [...] }

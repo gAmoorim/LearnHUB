@@ -5,7 +5,7 @@ const routers = require('./routers/routers')
 const app = express()
 
 app.use(cors({
-  origin: ['https://yourlearnhub.vercel.app', 'http://localhost:3000'],
+  origin: ['https://yourlearnhub.vercel.app', 'http://localhost:5173'],
   credentials: false
 }))
 
